@@ -1,0 +1,57 @@
+name: seker-call-me
+
+services:
+  ntfy:
+    image: binwiederhier/ntfy:v2.28.0
+    command: serve
+    restart: unless-stopped
+    environment:
+      NTFY_BASE_URL: http://${LAN_HOST}:${NTFY_PORT:-8080}
+      NTFY_UPSTREAM_BASE_URL: ${NTFY_UPSTREAM_BASE_URL:-}
+    ports:
+      - "${LAN_HOST}:${NTFY_PORT:-8080}:80"
+    volumes:
+      - ./config/ntfy-server.yml:/etc/ntfy/server.yml:ro
+      - ntfy-data:/var/lib/ntfy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/v1/health | grep -q '\"healthy\":true'"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+
+  ntfy-mcp:
+    image: ghcr.io/cyanheads/ntfy-mcp-server:2.3.3
+    restart: unless-stopped
+    environment:
+      MCP_TRANSPORT_TYPE: http
+      MCP_SESSION_MODE: stateful
+      MCP_HTTP_HOST: 0.0.0.0
+      MCP_HTTP_PORT: 3010
+      MCP_HTTP_ENDPOINT_PATH: /mcp
+      MCP_AUTH_MODE: none
+      MCP_LOG_LEVEL: info
+      NTFY_BASE_URL: http://ntfy
+      NTFY_DEFAULT_TOPIC: ${NTFY_TOPIC}
+      NTFY_AUTH_USERNAME: ${NTFY_USER}
+      NTFY_AUTH_PASSWORD: ${NTFY_PASSWORD}
+      NTFY_REQUEST_TIMEOUT_MS: 5000
+      NTFY_MAX_RETRIES: 3
+    depends_on:
+      ntfy:
+        condition: service_healthy
+
+  mcp-gateway:
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    environment:
+      MCP_ACCESS_TOKEN: ${MCP_ACCESS_TOKEN}
+    ports:
+      - "${LAN_HOST}:${MCP_PORT:-3010}:80"
+    volumes:
+      - ./config/Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - ntfy-mcp
+
+volumes:
+  ntfy-data:

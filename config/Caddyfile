@@ -1,0 +1,6 @@
+:80 {
+	@unauthorized not header Authorization "Bearer {$MCP_ACCESS_TOKEN}"
+	respond @unauthorized "Unauthorized" 401
+
+	reverse_proxy ntfy-mcp:3010
+}
