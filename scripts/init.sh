@@ -30,7 +30,9 @@ if [[ ! -f "$root/.env" ]]; then
     "NTFY_USER=codex" \
     "NTFY_PASSWORD=$ntfy_password" \
     "NTFY_TOPIC=$ntfy_topic" \
-    "NTFY_UPSTREAM_BASE_URL=" > "$root/.env"
+    "NTFY_UPSTREAM_BASE_URL=" \
+    "SEKER_VOICE=Tingting" \
+    "SEKER_VOICE_RATE=190" > "$root/.env"
 fi
 
 load_env

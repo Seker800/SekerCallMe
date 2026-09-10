@@ -1,6 +1,6 @@
 # SekerCallMe
 
-让局域网里的 Codex 在完成工作或需要你处理问题时，通过同一个 MCP 向你的手机或电脑发通知。
+让局域网里的 Codex 在完成重要工作或需要你处理问题时，通过同一个 MCP 让这台 Mac 直接开口提醒你。手机和浏览器通知只是可选项。
 
 它组合了三个成熟组件：
 
@@ -12,21 +12,30 @@
 
 ## 服务端安装
 
-需要 Docker、Docker Compose、curl 和 openssl。
+需要 macOS，以及 Docker、Docker Compose、curl、jq 和 openssl。
 
 ```bash
 make init
+make voice-install
 ```
 
 命令会生成随机密码和令牌、启动服务、创建仅能访问一个通知主题的 ntfy 用户，并执行冒烟测试。生成的秘密保存在 `.env`，不会提交到 Git。
 
-完成后打开终端打印的 ntfy 地址，或者在 ntfy 手机应用里添加服务器和主题。用户名、密码和主题可在服务端 `.env` 中查看。
+`make voice-install` 会安装当前 macOS 用户的 LaunchAgent。它登录后自动运行，订阅通知并用系统中文语音念出标题和正文，不需要配置手机或保持浏览器打开。
+
+需要换声音或语速时，可在 `.env` 设置 `SEKER_VOICE` 和 `SEKER_VOICE_RATE`，然后重新运行 `make voice-install`。系统声音名称可用 `say -v '?'` 查看。
+
+立即试听：
+
+```bash
+make voice-test
+```
 
 ## 连接一台 Codex
 
 `make init` 会生成 `runtime/codex-config.toml`。把其中内容追加到目标机器的 `~/.codex/config.toml`，然后重启该机器上的 Codex 客户端。
 
-为了告诉 Codex 什么时候通知，把 `client/AGENTS.notification.md` 的内容加入目标机器的全局 `~/.codex/AGENTS.md`。
+为了告诉 Codex 什么时候值得出声，把 `client/AGENTS.notification.md` 的内容加入目标机器的全局 `~/.codex/AGENTS.md`。默认策略会在重要或耗时任务完成、以及需要你介入的阻塞时自主提醒；普通问答和小操作保持安静。
 
 Codex Desktop、CLI 和 IDE 在同一台主机上共享 MCP 配置；不同局域网机器仍需各配置一次。
 
@@ -47,6 +56,8 @@ make status
 make logs
 make check
 make smoke
+make voice-status
+make voice-test
 make down
 ```
 

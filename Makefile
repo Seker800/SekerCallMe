@@ -1,4 +1,4 @@
-.PHONY: init up down logs status check smoke client-config
+.PHONY: init up down logs status check smoke client-config voice-install voice-uninstall voice-status voice-test
 
 init:
 	./scripts/init.sh
@@ -23,3 +23,15 @@ smoke:
 
 client-config:
 	./scripts/generate-client-config.sh
+
+voice-install:
+	./scripts/install-voice-subscriber.sh
+
+voice-uninstall:
+	./scripts/uninstall-voice-subscriber.sh
+
+voice-status:
+	launchctl print gui/$$(id -u)/com.seker.callme.voice
+
+voice-test:
+	./scripts/publish-voice-test.sh
