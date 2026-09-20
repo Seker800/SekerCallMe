@@ -24,4 +24,6 @@ You should receive an initial response within seven days. Please allow time for 
 
 The default HTTP deployment is intended only for a trusted LAN. It must not be exposed directly to the public internet. Use a trusted VPN or an authenticated HTTPS reverse proxy across untrusted networks.
 
+The optional Qwen3-TTS HTTP endpoint is a local implementation detail. It must stay bound to `127.0.0.1`, must not enable browser CORS, and must not log notification text. Do not publish its port through Docker, a reverse proxy, router forwarding, or a tunnel.
+
 If a real credential may have been disclosed, rotate it immediately. Do not wait for the vulnerability report to be processed.
