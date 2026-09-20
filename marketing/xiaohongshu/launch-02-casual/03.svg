@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1440" viewBox="0 0 1080 1440"><defs>
+  <pattern id="dots" width="42" height="42" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="2" fill="#D8D1C6" opacity=".42"/></pattern>
+  <filter id="smallShadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#413B32" flood-opacity=".10"/></filter>
+</defs><rect width="1080" height="1440" fill="#EEE9DD"/><rect width="1080" height="1440" fill="url(#dots)"/>
+  <g transform="translate(72 72) rotate(-1)"><rect width="330" height="62" rx="18" fill="#FFFFFF" stroke="#242329" stroke-width="3"/><text x="165" y="41" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="22" font-weight="650" fill="#242329" text-anchor="middle">安装也没那么复杂</text></g>
+  <text x="72" y="230" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="74" font-weight="760" fill="#242329" text-anchor="start">把仓库地址</text>
+  <text x="72" y="320" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="74" font-weight="760" fill="#242329" text-anchor="start">丢给你自己的 Agent</text>
+  <g transform="translate(72 405)">
+    <rect width="936" height="710" rx="42" fill="#FFFFFF" filter="url(#smallShadow)"/>
+    <text x="48" y="60" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="22" font-weight="650" fill="#77737E" text-anchor="start">你</text>
+    <g transform="translate(48 90)"><rect width="780" height="116" rx="28" fill="#E9E3FF"/><text x="32" y="48" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="25" font-weight="650" fill="#705CF6" text-anchor="start">github.com/Seker800/LetAgentSpeak</text><text x="32" y="86" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="25" font-weight="650" fill="#242329" text-anchor="start">帮我按仓库说明装好，装完测试一下。</text></g>
+    <text x="48" y="274" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="22" font-weight="650" fill="#77737E" text-anchor="start">你的 Agent</text>
+    <g transform="translate(48 304)"><rect width="650" height="108" rx="28" fill="#F0F0F2"/><text x="32" y="67" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="27" font-weight="600" fill="#242329" text-anchor="start">好，我来检查环境并安装。</text></g>
+    <path d="M458 458q0 72-110 72" fill="none" stroke="#FF7849" stroke-width="8" stroke-linecap="round"/>
+    <path d="m360 515-18 16 24 5" fill="none" stroke="#FF7849" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="48" y="610" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="36" font-weight="760" fill="#242329" text-anchor="start">然后让它自己折腾就行。</text>
+    <text x="48" y="661" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="25" font-weight="500" fill="#77737E" text-anchor="start">不用照着教程一项项手配。</text>
+  </g>
+  <text x="72" y="1230" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="28" font-weight="700" fill="#FF7849" text-anchor="start">一句话版本：</text>
+  <text x="72" y="1280" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="34" font-weight="700" fill="#242329" text-anchor="start">把地址发给 Agent，让它帮你弄好。</text>
+</svg>

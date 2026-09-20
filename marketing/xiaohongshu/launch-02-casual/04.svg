@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1440" viewBox="0 0 1080 1440"><defs>
+  <pattern id="dots" width="42" height="42" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="2" fill="#D8D1C6" opacity=".42"/></pattern>
+  <filter id="smallShadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#413B32" flood-opacity=".10"/></filter>
+</defs><rect width="1080" height="1440" fill="#F7F4ED"/><rect width="1080" height="1440" fill="url(#dots)"/>
+  <text x="72" y="175" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="78" font-weight="760" fill="#242329" text-anchor="start">它就干两件事</text>
+  <path d="M72 207 q115 10 230 1 t230 3" fill="none" stroke="#FF7849" stroke-width="9" stroke-linecap="round"/>
+  <g transform="translate(72 320) rotate(-1)">
+    <rect width="936" height="360" rx="44" fill="#FFFFFF" stroke="#705CF6" stroke-width="4" filter="url(#smallShadow)"/>
+    <circle cx="100" cy="100" r="48" fill="#E9E3FF"/>
+    <text x="100" y="116" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="46" font-weight="800" fill="#705CF6" text-anchor="middle">✓</text>
+    <text x="174" y="91" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="39" font-weight="760" fill="#242329" text-anchor="start">干完了</text>
+    <text x="174" y="145" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="32" font-weight="600" fill="#77737E" text-anchor="start">把结果说一声</text>
+    <rect x="90" y="218" width="730" height="92" rx="25" fill="#E9E3FF"/>
+    <text x="455" y="275" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="29" font-weight="650" fill="#242329" text-anchor="middle">“检查完成，没发现问题。”</text>
+  </g>
+  <g transform="translate(72 760) rotate(1)">
+    <rect width="936" height="360" rx="44" fill="#FFFFFF" stroke="#FF7849" stroke-width="4" filter="url(#smallShadow)"/>
+    <circle cx="100" cy="100" r="48" fill="#FFF0E9"/>
+    <text x="100" y="116" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="46" font-weight="800" fill="#FF7849" text-anchor="middle">!</text>
+    <text x="174" y="91" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="39" font-weight="760" fill="#242329" text-anchor="start">卡住了</text>
+    <text x="174" y="145" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="32" font-weight="600" fill="#77737E" text-anchor="start">告诉我现在要做什么</text>
+    <rect x="90" y="218" width="730" height="92" rx="25" fill="#FFF0E9"/>
+    <text x="455" y="275" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="29" font-weight="650" fill="#242329" text-anchor="middle">“需要你确认一下权限。”</text>
+  </g>
+  <text x="540" y="1282" font-family="Kaiti SC, STKaiti, PingFang SC, sans-serif" font-size="34" font-weight="680" fill="#77737E" text-anchor="middle">没了，就这么简单。</text>
+</svg>

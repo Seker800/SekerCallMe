@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1440" viewBox="0 0 1080 1440"><defs>
+  <pattern id="dots" width="42" height="42" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="2" fill="#D8D1C6" opacity=".42"/></pattern>
+  <filter id="smallShadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#413B32" flood-opacity=".10"/></filter>
+</defs><rect width="1080" height="1440" fill="#F7F4ED"/><rect width="1080" height="1440" fill="url(#dots)"/>
+  <g transform="translate(72 72) rotate(-1)"><rect width="300" height="62" rx="18" fill="#FFFFFF" stroke="#242329" stroke-width="3"/><text x="150" y="41" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="22" font-weight="650" fill="#242329" text-anchor="middle">随手做了个小东西</text></g>
+  <text x="72" y="260" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="94" font-weight="780" fill="#242329" text-anchor="start">AI 干完活</text>
+  <text x="72" y="374" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="94" font-weight="780" fill="#242329" text-anchor="start">会喊我一声了</text>
+  <path d="M72 408 q135 10 270 1 t270 3" fill="none" stroke="#FF7849" stroke-width="9" stroke-linecap="round"/>
+  <text x="76" y="486" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="31" font-weight="500" fill="#77737E" text-anchor="start">不用再隔几分钟回去瞄一眼</text>
+  <g transform="translate(486 502) rotate(4)"><rect width="408" height="126" rx="28" fill="#FFFFFF" stroke="#242329" stroke-width="4"/><text x="204" y="52" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="27" font-weight="650" fill="#242329" text-anchor="middle">“测试过了，</text><text x="204" y="91" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="27" font-weight="650" fill="#242329" text-anchor="middle">任务完成。”</text><path d="M36 126l-28 34 66-34" fill="#fff" stroke="#242329" stroke-width="4" stroke-linejoin="round"/></g>
+  <g transform="translate(115 720) scale(1.55)">
+    <rect x="0" y="0" width="520" height="320" rx="28" fill="#2D2C33"/>
+    <rect x="22" y="22" width="476" height="276" rx="14" fill="#19191E"/>
+    <circle cx="260" cy="11" r="4" fill="#77737E"/>
+    <path d="M-35 320h590l-38 46H3Z" fill="#B9B6B1"/>
+    <path d="M215 320h90l-10 17h-70Z" fill="#8C8884"/>
+    <path d="M82 92h150M82 132h270M82 172h210M82 212h305" stroke="#7060F6" stroke-width="14" stroke-linecap="round" opacity=".8"/>
+    <path d="M420 104q42 30 0 60M448 82q72 55 0 107" fill="none" stroke="#FF7849" stroke-width="12" stroke-linecap="round"/>
+  </g>
+  <text x="72" y="1362" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="24" font-weight="650" fill="#77737E" text-anchor="start">Let Agent Speak</text>
+</svg>

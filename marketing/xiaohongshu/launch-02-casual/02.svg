@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1440" viewBox="0 0 1080 1440"><defs>
+  <pattern id="dots" width="42" height="42" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="2" fill="#D8D1C6" opacity=".42"/></pattern>
+  <filter id="smallShadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#413B32" flood-opacity=".10"/></filter>
+</defs><rect width="1080" height="1440" fill="#F7F4ED"/><rect width="1080" height="1440" fill="url(#dots)"/>
+  <text x="72" y="160" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="74" font-weight="760" fill="#242329" text-anchor="start">以前 vs 现在</text>
+  <path d="M72 192 q87 10 174 1 t174 3" fill="none" stroke="#705CF6" stroke-width="9" stroke-linecap="round"/>
+  <g transform="translate(72 280) rotate(-1)">
+    <rect width="936" height="420" rx="38" fill="#FFF7E9" stroke="#FF7849" stroke-width="4" filter="url(#smallShadow)"/>
+    <text x="46" y="74" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="34" font-weight="760" fill="#FF7849" text-anchor="start">以前</text>
+    <text x="46" y="142" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="30" font-weight="650" fill="#242329" text-anchor="start">开始跑任务</text>
+    <text x="46" y="198" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="30" font-weight="650" fill="#242329" text-anchor="start">去倒杯水</text>
+    <text x="46" y="254" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="30" font-weight="650" fill="#242329" text-anchor="start">回来瞄一眼</text>
+    <text x="46" y="310" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="30" font-weight="650" fill="#242329" text-anchor="start">再瞄一眼……</text>
+    <path d="M520 116q120 70 15 172q-92 88-8 92" fill="none" stroke="#FF7849" stroke-width="9" stroke-linecap="round" stroke-dasharray="14 18"/>
+    <text x="710" y="183" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="28" font-weight="650" fill="#77737E" text-anchor="middle">人走了</text>
+    <text x="710" y="228" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="38" font-weight="760" fill="#242329" text-anchor="middle">注意力没走</text>
+  </g>
+  <g transform="translate(72 770) rotate(1)">
+    <rect width="936" height="420" rx="38" fill="#E9E3FF" stroke="#705CF6" stroke-width="4" filter="url(#smallShadow)"/>
+    <text x="46" y="74" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="34" font-weight="760" fill="#705CF6" text-anchor="start">现在</text>
+    <text x="46" y="156" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="34" font-weight="650" fill="#242329" text-anchor="start">任务丢给 Agent</text>
+    <text x="46" y="220" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="34" font-weight="650" fill="#242329" text-anchor="start">我去干别的</text>
+    <rect x="430" y="102" width="430" height="150" rx="28" fill="#FFFFFF" stroke="#242329" stroke-width="3"/>
+    <text x="645" y="164" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="31" font-weight="700" fill="#242329" text-anchor="middle">“已经做完了。”</text>
+    <text x="645" y="210" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="26" font-weight="500" fill="#77737E" text-anchor="middle">听见再回来</text>
+    <text x="46" y="344" font-family="PingFang SC, Hiragino Sans GB, sans-serif" font-size="30" font-weight="650" fill="#705CF6" text-anchor="start">就这么点区别，但舒服很多。</text>
+  </g>
+</svg>
