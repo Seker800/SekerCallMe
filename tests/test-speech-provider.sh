@@ -5,6 +5,7 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 speaker="$root/client/speak.sh"
 tmp_dir="$(mktemp -d)"
+trap 'rm -rf "$tmp_dir"' EXIT
 bin_dir="$tmp_dir/bin"
 mkdir -p "$bin_dir"
 
@@ -38,6 +39,9 @@ SCRIPT
 cat >"$bin_dir/say" <<'SCRIPT'
 #!/usr/bin/env bash
 printf 'say %s\n' "$*" >>"$TEST_CALLS"
+printf 'say-stdin ' >>"$TEST_CALLS"
+cat >>"$TEST_CALLS"
+printf '\n' >>"$TEST_CALLS"
 SCRIPT
 
 chmod +x "$bin_dir/curl" "$bin_dir/afplay" "$bin_dir/say"
@@ -63,8 +67,13 @@ grep -q '^curl ' "$TEST_CALLS"
 grep -q '^say ' "$TEST_CALLS"
 
 : >"$TEST_CALLS"
-SEKER_SPEECH_PROVIDER=say "$speaker" '只用系统语音。'
+SEKER_SPEECH_PROVIDER=say "$speaker" '以-f 开头的文本不应被当成选项。'
 grep -q '^say ' "$TEST_CALLS"
+grep -q '^say-stdin 以-f 开头的文本不应被当成选项。$' "$TEST_CALLS"
+if grep -q '^say .*以-f' "$TEST_CALLS"; then
+  echo 'Speech text must be passed on standard input, not parsed as command options.' >&2
+  exit 1
+fi
 if grep -q '^curl ' "$TEST_CALLS"; then
   echo 'Qwen should not run when the system provider is selected.' >&2
   exit 1

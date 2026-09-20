@@ -1,9 +1,12 @@
-.PHONY: init up down logs status check smoke client-config voice-install voice-uninstall voice-status voice-test voice-ai-install voice-ai-uninstall voice-ai-status
+.PHONY: init validate-env up down logs status check smoke client-config voice-install voice-uninstall voice-status voice-test voice-ai-install voice-ai-uninstall voice-ai-status
 
 init:
 	./scripts/init.sh
 
-up:
+validate-env:
+	./scripts/validate-env.sh
+
+up: validate-env
 	docker compose up -d
 
 down:

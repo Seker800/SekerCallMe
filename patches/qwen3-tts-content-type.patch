@@ -1,0 +1,56 @@
+diff --git a/qwen_tts_server.c b/qwen_tts_server.c
+index 9a1ad63..2bf5d41 100644
+--- a/qwen_tts_server.c
++++ b/qwen_tts_server.c
+@@ -1360,20 +1360,38 @@ static int http_precheck(int fd, const char *method, const char *path,
+         send_error(fd, 413, "request body too large");
+         return 1;
+     }
+-    const char *ct = headers ? strcasestr(headers, "Content-Type:") : NULL;
+-    if (ct) {
+-        ct += strlen("Content-Type:");
+-        while (*ct == ' ' || *ct == '\t') ct++;
+-        if (!strcasestr(ct, "application/json") ||
+-            (size_t)(strcspn(ct, "\r\n")) == 0) {
+-            char m[200]; int n = (int)strcspn(ct, ";\r\n");
+-            if (n > 80) n = 80;
+-            snprintf(m, sizeof(m), "unsupported Content-Type '%.*s' - this endpoint takes "
+-                                   "application/json only (no form data, no multipart, "
+-                                   "no file upload)", n, ct);
+-            send_error(fd, 415, m);
+-            return 1;
++    const char *header_end = headers ? strstr(headers, "\r\n\r\n") : NULL;
++    const char *ct = NULL;
++    const char *scan = headers;
++    while (header_end && scan && scan < header_end) {
++        scan = strcasestr(scan, "Content-Type:");
++        if (!scan || scan >= header_end) break;
++        if (scan == headers || (scan >= headers + 2 && scan[-2] == '\r' && scan[-1] == '\n')) {
++            ct = scan + strlen("Content-Type:");
++            break;
+         }
++        scan += strlen("Content-Type:");
++    }
++    if (!ct) {
++        send_error(fd, 415, "request Content-Type is required and must be application/json");
++        return 1;
++    }
++    while (ct < header_end && (*ct == ' ' || *ct == '\t')) ct++;
++    const char *line_end = strstr(ct, "\r\n");
++    if (!line_end || line_end > header_end) line_end = header_end;
++    const char *media_end = memchr(ct, ';', (size_t)(line_end - ct));
++    if (!media_end) media_end = line_end;
++    while (media_end > ct && (media_end[-1] == ' ' || media_end[-1] == '\t')) media_end--;
++    size_t media_len = (size_t)(media_end - ct);
++    if (media_len != strlen("application/json") ||
++        strncasecmp(ct, "application/json", media_len) != 0) {
++        char m[200]; int n = (int)(line_end - ct);
++        if (n > 80) n = 80;
++        snprintf(m, sizeof(m), "unsupported Content-Type '%.*s' - this endpoint takes "
++                               "application/json only (no form data, no multipart, "
++                               "no file upload)", n, ct);
++        send_error(fd, 415, m);
++        return 1;
+     }
+     const char *b = body ? body : "";
+     while (*b == ' ' || *b == '\t' || *b == '\r' || *b == '\n') b++;

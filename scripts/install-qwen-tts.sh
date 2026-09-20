@@ -54,46 +54,34 @@ apply_patch_once() {
 apply_patch_once "$root/patches/qwen3-tts-loopback.patch"
 apply_patch_once "$root/patches/qwen3-tts-make-3.81.patch"
 apply_patch_once "$root/patches/qwen3-tts-local-security.patch"
+apply_patch_once "$root/patches/qwen3-tts-content-type.patch"
 
 make -C "$source_dir" blas
 "$source_dir/qwen_tts" --caps
 "$source_dir/qwen_tts" --self-test
 
-if [[ ! -f "$model_dir/model.safetensors" ]]; then
-  QWEN_MODEL_REVISION="$model_revision" \
-    "$source_dir/download_model.sh" --model small --dir "$model_dir"
-fi
+QWEN_MODEL_REVISION="$model_revision" \
+  "$source_dir/download_model.sh" --model small --dir "$model_dir"
+qwen_model_complete "$model_dir" || {
+  echo 'Qwen3-TTS model download is incomplete.' >&2
+  exit 1
+}
 
-cat >"$plist_path" <<PLIST
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key>
-  <string>${label}</string>
-  <key>ProgramArguments</key>
-  <array>
-    <string>${root}/client/qwen-tts-server.sh</string>
-  </array>
-  <key>RunAtLoad</key>
-  <false/>
-  <key>KeepAlive</key>
-  <false/>
-  <key>ProcessType</key>
-  <string>Interactive</string>
-  <key>Umask</key>
-  <integer>63</integer>
-  <key>StandardOutPath</key>
-  <string>${root}/runtime/qwen-tts.log</string>
-  <key>StandardErrorPath</key>
-  <string>${root}/runtime/qwen-tts.error.log</string>
-</dict>
-</plist>
-PLIST
-
-plutil -lint "$plist_path" >/dev/null
-launchctl bootout "gui/${uid}" "$plist_path" >/dev/null 2>&1 || true
-launchctl bootstrap "gui/${uid}" "$plist_path"
+install_launch_agent_plist \
+  "$uid" \
+  "$plist_path" \
+  "$label" \
+  false \
+  false \
+  Interactive \
+  "$root/runtime/qwen-tts.log" \
+  "$root/runtime/qwen-tts.error.log" \
+  63 \
+  /usr/bin/env \
+  -i \
+  PATH=/usr/bin:/bin:/usr/sbin:/sbin \
+  LANG="${LANG:-en_US.UTF-8}" \
+  "$root/client/qwen-tts-server.sh"
 "$root/client/qwen-tts-wake.sh"
 
 echo 'Qwen3-TTS installed and ready; it sleeps after the configured idle period.'

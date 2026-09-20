@@ -39,19 +39,49 @@ load_env
 cd "$root"
 docker compose up -d ntfy
 
+ntfy_health_url="http://${LAN_HOST}:${NTFY_PORT}/v1/health"
 for _ in $(seq 1 30); do
-  if curl -fsS "http://127.0.0.1:${NTFY_PORT}/v1/health" >/dev/null; then
+  if curl -fsS "$ntfy_health_url" >/dev/null; then
     break
   fi
   sleep 1
 done
-curl -fsS "http://127.0.0.1:${NTFY_PORT}/v1/health" >/dev/null
+curl -fsS "$ntfy_health_url" >/dev/null
 
-docker compose exec -T -e NTFY_PASSWORD="$NTFY_PASSWORD" ntfy \
-  ntfy user add --ignore-exists "$NTFY_USER" >/dev/null
-docker compose exec -T -e NTFY_PASSWORD="$NTFY_PASSWORD" ntfy \
-  ntfy user change-pass "$NTFY_USER" >/dev/null
-docker compose exec -T ntfy ntfy access "$NTFY_USER" "$NTFY_TOPIC" rw >/dev/null
+managed_user_file="$root/runtime/managed-ntfy-user"
+mkdir -p "$root/runtime"
+record_managed_user() {
+  printf '%s\n' "$NTFY_USER" >"${managed_user_file}.tmp"
+  chmod 600 "${managed_user_file}.tmp"
+  mv "${managed_user_file}.tmp" "$managed_user_file"
+}
+if [[ -f "$managed_user_file" ]]; then
+  previous_user="$(<"$managed_user_file")"
+  if [[ "$previous_user" =~ ^[A-Za-z0-9._-]+$ && "$previous_user" != "$NTFY_USER" ]]; then
+    if ! ntfy_users="$(docker compose exec -T ntfy ntfy user list 2>/dev/null)"; then
+      echo 'Could not inspect the previously managed ntfy user; its marker was preserved.' >&2
+      exit 1
+    fi
+    if grep -Fq "user ${previous_user} (" <<<"$ntfy_users" && \
+      ! docker compose exec -T ntfy ntfy user remove "$previous_user" >/dev/null 2>&1; then
+      echo 'Could not remove the previously managed ntfy user; its marker was preserved.' >&2
+      exit 1
+    fi
+    record_managed_user
+  fi
+fi
+
+export NTFY_PASSWORD NTFY_USER NTFY_TOPIC
+docker compose exec -T -e NTFY_PASSWORD -e NTFY_USER ntfy \
+  sh -eu -c 'ntfy user add --ignore-exists "$NTFY_USER"' >/dev/null
+docker compose exec -T -e NTFY_PASSWORD -e NTFY_USER ntfy \
+  sh -eu -c 'ntfy user change-pass "$NTFY_USER"' >/dev/null
+docker compose exec -T -e NTFY_USER ntfy \
+  sh -eu -c 'ntfy access --reset "$NTFY_USER"' >/dev/null
+docker compose exec -T -e NTFY_USER -e NTFY_TOPIC ntfy \
+  sh -eu -c 'ntfy access "$NTFY_USER" "$NTFY_TOPIC" rw' >/dev/null
+export -n NTFY_PASSWORD NTFY_USER NTFY_TOPIC
+record_managed_user
 
 docker compose up -d
 "$root/scripts/generate-client-config.sh" >/dev/null
@@ -59,6 +89,6 @@ docker compose up -d
 
 echo
 echo "Let Agent Speak is ready."
-echo "ntfy: http://${LAN_HOST}:${NTFY_PORT}/${NTFY_TOPIC}"
-echo "MCP:  http://${LAN_HOST}:${MCP_PORT}/mcp"
+echo "ntfy: configured on the private LAN (topic omitted)"
+echo "MCP:  gateway configured (address omitted)"
 echo "Client configuration: $root/runtime/codex-config.toml"

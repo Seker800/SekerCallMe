@@ -9,6 +9,23 @@ set -euo pipefail
 : "${SEKER_NTFY_TOPIC:?Set SEKER_NTFY_TOPIC}"
 : "${SEKER_NTFY_USER:?Set SEKER_NTFY_USER}"
 : "${SEKER_NTFY_PASSWORD:?Set SEKER_NTFY_PASSWORD}"
+export -n SEKER_NTFY_URL SEKER_NTFY_TOPIC SEKER_NTFY_USER SEKER_NTFY_PASSWORD
+
+curl_config_escape() {
+  local value="$1"
+  [[ "$value" != *$'\n'* && "$value" != *$'\r'* ]] || return 1
+  value="${value//\\/\\\\}"
+  value="${value//\"/\\\"}"
+  printf '%s' "$value"
+}
+
+curl_basic_config() {
+  local username password url
+  username="$(curl_config_escape "$SEKER_NTFY_USER")"
+  password="$(curl_config_escape "$SEKER_NTFY_PASSWORD")"
+  url="$(curl_config_escape "${SEKER_NTFY_URL%/}/${SEKER_NTFY_TOPIC}")"
+  printf 'user = "%s:%s"\nurl = "%s"\n' "$username" "$password" "$url"
+}
 
 payload="${1:-{}}"
 message=""
@@ -31,9 +48,8 @@ if [[ -z "$message" ]]; then
 fi
 
 curl -fsS \
-  -u "${SEKER_NTFY_USER}:${SEKER_NTFY_PASSWORD}" \
+  --config <(curl_basic_config) \
   -H 'Title: Codex 任务结束' \
   -H 'Priority: 3' \
   -H 'Tags: white_check_mark,computer' \
-  -d "$message" \
-  "${SEKER_NTFY_URL%/}/${SEKER_NTFY_TOPIC}" >/dev/null
+  -d "$message" >/dev/null

@@ -22,34 +22,21 @@ uid="$(id -u)"
 
 mkdir -p "$launch_agents_dir" "$runtime_dir"
 
-cat >"$plist_path" <<PLIST
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key>
-  <string>${label}</string>
-  <key>ProgramArguments</key>
-  <array>
-    <string>${root}/client/voice-subscriber.sh</string>
-  </array>
-  <key>RunAtLoad</key>
-  <true/>
-  <key>KeepAlive</key>
-  <true/>
-  <key>ProcessType</key>
-  <string>Background</string>
-  <key>StandardOutPath</key>
-  <string>${runtime_dir}/voice-subscriber.log</string>
-  <key>StandardErrorPath</key>
-  <string>${runtime_dir}/voice-subscriber.error.log</string>
-</dict>
-</plist>
-PLIST
-
-plutil -lint "$plist_path" >/dev/null
-launchctl bootout "gui/${uid}" "$plist_path" >/dev/null 2>&1 || true
-launchctl bootstrap "gui/${uid}" "$plist_path"
+install_launch_agent_plist \
+  "$uid" \
+  "$plist_path" \
+  "$label" \
+  true \
+  true \
+  Background \
+  "$runtime_dir/voice-subscriber.log" \
+  "$runtime_dir/voice-subscriber.error.log" \
+  '' \
+  /usr/bin/env \
+  -i \
+  PATH=/usr/bin:/bin:/usr/sbin:/sbin \
+  LANG="${LANG:-en_US.UTF-8}" \
+  "$root/client/voice-subscriber.sh"
 launchctl kickstart -k "gui/${uid}/${label}"
 
 echo "Voice subscriber installed and running: ${label}"

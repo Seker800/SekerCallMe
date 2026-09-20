@@ -21,7 +21,7 @@ if [[ ! "$dedup_seconds" =~ ^[0-9]{1,4}$ ]]; then
 fi
 
 mkdir -p "$root/runtime"
-echo "Voice subscriber started for ${LAN_HOST}:${NTFY_PORT}."
+echo 'Voice subscriber started.'
 
 while true; do
   while IFS= read -r event; do
@@ -56,8 +56,7 @@ while true; do
     fi
   done < <(/usr/bin/curl -fsSN \
     --connect-timeout 10 \
-    -u "${NTFY_USER}:${NTFY_PASSWORD}" \
-    "$stream_url")
+    --config <(curl_basic_config "$NTFY_USER" "$NTFY_PASSWORD" "$stream_url"))
 
   echo 'Notification stream disconnected; reconnecting in 2 seconds.' >&2
   sleep 2

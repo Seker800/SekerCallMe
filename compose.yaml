@@ -6,9 +6,9 @@ services:
     command: serve
     restart: unless-stopped
     environment:
-      NTFY_BASE_URL: http://${LAN_HOST}:${NTFY_PORT:-8080}
+      NTFY_BASE_URL: http://${LAN_HOST:?Set LAN_HOST in .env}:${NTFY_PORT:-8080}
     ports:
-      - "${LAN_HOST}:${NTFY_PORT:-8080}:80"
+      - "${LAN_HOST:?Set LAN_HOST in .env}:${NTFY_PORT:-8080}:80"
     volumes:
       - ./config/ntfy-server.yml:/etc/ntfy/server.yml:ro
       - ntfy-data:/var/lib/ntfy
@@ -31,9 +31,9 @@ services:
       MCP_AUTH_MODE: none
       MCP_LOG_LEVEL: info
       NTFY_BASE_URL: http://ntfy
-      NTFY_DEFAULT_TOPIC: ${NTFY_TOPIC}
-      NTFY_AUTH_USERNAME: ${NTFY_USER}
-      NTFY_AUTH_PASSWORD: ${NTFY_PASSWORD}
+      NTFY_DEFAULT_TOPIC: ${NTFY_TOPIC:?Set NTFY_TOPIC in .env}
+      NTFY_AUTH_USERNAME: ${NTFY_USER:?Set NTFY_USER in .env}
+      NTFY_AUTH_PASSWORD: ${NTFY_PASSWORD:?Set NTFY_PASSWORD in .env}
       NTFY_REQUEST_TIMEOUT_MS: 5000
       NTFY_MAX_RETRIES: 3
     depends_on:
@@ -44,9 +44,9 @@ services:
     image: caddy:2.10.2-alpine
     restart: unless-stopped
     environment:
-      MCP_ACCESS_TOKEN: ${MCP_ACCESS_TOKEN}
+      MCP_ACCESS_TOKEN: ${MCP_ACCESS_TOKEN:?Set MCP_ACCESS_TOKEN in .env}
     ports:
-      - "${LAN_HOST}:${MCP_PORT:-3010}:80"
+      - "${LAN_HOST:?Set LAN_HOST in .env}:${MCP_PORT:-3010}:80"
     volumes:
       - ./config/Caddyfile:/etc/caddy/Caddyfile:ro
     depends_on:

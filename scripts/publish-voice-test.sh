@@ -9,10 +9,12 @@ require_command curl
 load_env
 
 /usr/bin/curl -fsS \
-  -u "${NTFY_USER}:${NTFY_PASSWORD}" \
+  --config <(curl_basic_config \
+    "$NTFY_USER" \
+    "$NTFY_PASSWORD" \
+    "http://${LAN_HOST}:${NTFY_PORT}/${NTFY_TOPIC}") \
   -H 'Title: Codex 语音测试' \
   -H 'Priority: 4' \
-  -d '现在我真的会通过 MCP 消息喊你了。' \
-  "http://${LAN_HOST}:${NTFY_PORT}/${NTFY_TOPIC}" >/dev/null
+  -d '现在我真的会通过 MCP 消息喊你了。' >/dev/null
 
 echo 'Voice test notification published.'

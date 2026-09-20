@@ -5,7 +5,7 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # shellcheck source=../scripts/lib.sh
 source "$root/scripts/lib.sh"
-load_env
+load_env_private
 
 qwen_revision="e391ec5467b0218eeb175f4888ad65b259d1e7c7"
 install_dir="$root/runtime/qwen3-tts/$qwen_revision"
@@ -20,7 +20,7 @@ activity_file="$root/runtime/qwen-tts.last-used"
   echo 'Qwen3-TTS binary is missing. Run: make voice-ai-install' >&2
   exit 1
 }
-[[ -f "$model_dir/model.safetensors" ]] || {
+qwen_model_complete "$model_dir" || {
   echo 'Qwen3-TTS model is missing. Run: make voice-ai-install' >&2
   exit 1
 }

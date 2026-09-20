@@ -3,4 +3,3 @@ cache-file: "/var/lib/ntfy/cache.db"
 auth-file: "/var/lib/ntfy/user.db"
 auth-default-access: "deny-all"
 enable-login: true
-behind-proxy: true

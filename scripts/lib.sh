@@ -20,12 +20,141 @@ load_env() {
     echo "Missing $root/.env. Run: make init" >&2
     exit 1
   fi
-  set -a
+  chmod 600 "$root/.env"
   # shellcheck disable=SC1091
   source "$root/.env"
-  set +a
 
   validate_env
+  unexport_env
+}
+
+load_env_private() {
+  local root
+  root="$(project_dir)"
+  if [[ ! -f "$root/.env" ]]; then
+    echo "Missing $root/.env. Run: make init" >&2
+    exit 1
+  fi
+  chmod 600 "$root/.env"
+  # shellcheck disable=SC1091
+  source "$root/.env"
+  validate_env
+  unexport_env
+}
+
+unexport_env() {
+  export -n \
+    LAN_HOST MCP_PORT NTFY_PORT MCP_ACCESS_TOKEN NTFY_USER NTFY_PASSWORD NTFY_TOPIC \
+    SEKER_VOICE SEKER_VOICE_RATE SEKER_SPEECH_PROVIDER SEKER_VOICE_DEDUP_SECONDS \
+    SEKER_QWEN_TTS_PORT SEKER_QWEN_TTS_URL SEKER_QWEN_TTS_VOICE \
+    SEKER_QWEN_TTS_LANGUAGE SEKER_QWEN_TTS_RATE SEKER_QWEN_TTS_TIMEOUT \
+    SEKER_QWEN_TTS_STARTUP_TIMEOUT SEKER_QWEN_TTS_THREADS SEKER_QWEN_TTS_IDLE_SECONDS
+}
+
+qwen_model_complete() {
+  local model_dir="$1" relative_path
+  local required_files=(
+    config.json
+    generation_config.json
+    tokenizer_config.json
+    preprocessor_config.json
+    model.safetensors
+    vocab.json
+    merges.txt
+    speech_tokenizer/config.json
+    speech_tokenizer/configuration.json
+    speech_tokenizer/model.safetensors
+    speech_tokenizer/preprocessor_config.json
+  )
+
+  for relative_path in "${required_files[@]}"; do
+    [[ -s "$model_dir/$relative_path" ]] || return 1
+  done
+}
+
+curl_config_escape() {
+  local value="$1"
+  [[ "$value" != *$'\n'* && "$value" != *$'\r'* ]] || return 1
+  value="${value//\\/\\\\}"
+  value="${value//\"/\\\"}"
+  printf '%s' "$value"
+}
+
+curl_basic_config() {
+  local username password url
+  username="$(curl_config_escape "$1")"
+  password="$(curl_config_escape "$2")"
+  url="$(curl_config_escape "$3")"
+  printf 'user = "%s:%s"\nurl = "%s"\n' "$username" "$password" "$url"
+}
+
+curl_bearer_config() {
+  local token
+  token="$(curl_config_escape "$1")"
+  printf 'header = "Authorization: Bearer %s"\n' "$token"
+}
+
+write_launch_agent_plist() {
+  local plist_path="$1" label="$2" run_at_load="$3" keep_alive="$4"
+  local process_type="$5" stdout_path="$6" stderr_path="$7" agent_umask="$8"
+  shift 8
+  local temporary_plist argument_index=0 argument
+  (($# > 0)) || return 1
+  temporary_plist="$(mktemp "${plist_path}.tmp.XXXXXX")"
+
+  if ! {
+    plutil -create xml1 "$temporary_plist" &&
+      plutil -insert Label -string "$label" "$temporary_plist" &&
+      plutil -insert ProgramArguments -array "$temporary_plist" &&
+      plutil -insert RunAtLoad -bool "$run_at_load" "$temporary_plist" &&
+      plutil -insert KeepAlive -bool "$keep_alive" "$temporary_plist" &&
+      plutil -insert ProcessType -string "$process_type" "$temporary_plist" &&
+      plutil -insert StandardOutPath -string "$stdout_path" "$temporary_plist" &&
+      plutil -insert StandardErrorPath -string "$stderr_path" "$temporary_plist" &&
+      { [[ -z "$agent_umask" ]] || plutil -insert Umask -integer "$agent_umask" "$temporary_plist"; } &&
+      plutil -lint "$temporary_plist" >/dev/null
+  }; then
+    rm -f "$temporary_plist"
+    return 1
+  fi
+
+  for argument in "$@"; do
+    plutil -insert "ProgramArguments.${argument_index}" -string "$argument" "$temporary_plist"
+    ((argument_index += 1))
+  done
+  plutil -lint "$temporary_plist" >/dev/null
+
+  chmod 600 "$temporary_plist"
+  mv "$temporary_plist" "$plist_path"
+}
+
+install_launch_agent_plist() {
+  local uid="$1" plist_path="$2" backup_path=''
+  shift 2
+
+  if [[ -f "$plist_path" ]]; then
+    backup_path="$(mktemp "${plist_path}.backup.XXXXXX")"
+    cp -p "$plist_path" "$backup_path"
+  fi
+
+  if ! write_launch_agent_plist "$plist_path" "$@"; then
+    [[ -z "$backup_path" ]] || rm -f "$backup_path"
+    return 1
+  fi
+
+  launchctl bootout "gui/${uid}" "$plist_path" >/dev/null 2>&1 || true
+  if launchctl bootstrap "gui/${uid}" "$plist_path"; then
+    [[ -z "$backup_path" ]] || rm -f "$backup_path"
+    return 0
+  fi
+
+  if [[ -n "$backup_path" ]]; then
+    mv "$backup_path" "$plist_path"
+    launchctl bootstrap "gui/${uid}" "$plist_path" >/dev/null 2>&1 || true
+  else
+    rm -f "$plist_path"
+  fi
+  return 1
 }
 
 validate_env() {

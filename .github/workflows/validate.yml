@@ -12,7 +12,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate shell syntax
-        run: bash -n scripts/*.sh client/*.sh
-      - name: Validate Compose configuration
-        run: docker compose --env-file .env.example config --quiet
+      - name: Run project checks
+        run: make check

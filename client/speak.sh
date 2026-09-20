@@ -23,7 +23,7 @@ case "$provider" in
 esac
 
 if [[ "$provider" != say ]]; then
-  audio_file="$(mktemp "${TMPDIR:-/tmp}/let-agent-speak.XXXXXX.wav")"
+  audio_file="$(mktemp "${TMPDIR:-/tmp}/let-agent-speak.XXXXXX")"
   cleanup() {
     rm -f "$audio_file"
   }
@@ -53,4 +53,4 @@ if [[ "$provider" != say ]]; then
   echo 'Neural speech unavailable; using the macOS system voice.' >&2
 fi
 
-/usr/bin/env say -v "$voice" -r "$voice_rate" "$text"
+printf '%s' "$text" | /usr/bin/env say -v "$voice" -r "$voice_rate" -f -
