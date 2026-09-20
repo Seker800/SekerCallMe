@@ -1,72 +1,165 @@
-# SekerCallMe
+<div align="center">
+  <img src="docs/assets/logo.svg" width="128" alt="SekerCallMe logo">
+  <h1>SekerCallMe</h1>
+  <p><strong>Let Codex call you when it actually matters.</strong></p>
+  <p>A private, self-hosted voice notification bridge for Codex on your trusted local network.</p>
 
-让局域网里的 Codex 在完成重要工作或需要你处理问题时，通过同一个 MCP 让这台 Mac 直接开口提醒你。手机和浏览器通知只是可选项。
+  <p>
+    <a href="https://github.com/Seker800/SekerCallMe/actions/workflows/validate.yml"><img src="https://img.shields.io/github/actions/workflow/status/Seker800/SekerCallMe/validate.yml?branch=main&style=flat-square&label=checks" alt="Checks"></a>
+    <a href="LICENSE"><img src="https://img.shields.io/github/license/Seker800/SekerCallMe?style=flat-square" alt="MIT License"></a>
+    <img src="https://img.shields.io/badge/macOS-voice-111827?style=flat-square&logo=apple" alt="macOS voice">
+    <img src="https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker Compose">
+    <img src="https://img.shields.io/badge/MCP-Streamable_HTTP-7C3AED?style=flat-square" alt="MCP Streamable HTTP">
+  </p>
 
-它组合了三个成熟组件：
+  <p><a href="README.zh-CN.md">简体中文</a> · <a href="#quick-start">Quick start</a> · <a href="#security-model">Security</a> · <a href="CONTRIBUTING.md">Contributing</a></p>
+</div>
 
-- [ntfy](https://github.com/binwiederhier/ntfy)：保存并推送通知；
-- [ntfy-mcp-server](https://github.com/cyanheads/ntfy-mcp-server)：给 Codex 提供通知工具；
-- Caddy：给局域网 MCP 入口加访问令牌。
+---
 
-服务只绑定自动检测到的局域网地址，不监听其他主机网卡。默认使用 HTTP，适合你信任的家庭或工作室局域网；不要在路由器上做公网端口映射。网络里有不可信设备时，应放到 Tailscale/WireGuard 或 HTTPS 反向代理后面。
+SekerCallMe gives every Codex host on your trusted LAN one small, consistent way to get your attention. At the end of each task—or when Codex genuinely needs you—the server Mac speaks a short outcome aloud. No phone, open browser, or cloud notification account is required.
 
-## 服务端安装
+It assembles three focused, replaceable components:
 
-需要 macOS，以及 Docker、Docker Compose、curl、jq 和 openssl。
+- [ntfy](https://github.com/binwiederhier/ntfy) stores and delivers notifications.
+- [ntfy-mcp-server](https://github.com/cyanheads/ntfy-mcp-server) exposes the notification tool to Codex.
+- [Caddy](https://github.com/caddyserver/caddy) protects the LAN-facing MCP endpoint with a bearer token.
+
+## Why SekerCallMe?
+
+- **Walk away from tasks.** Hear a concise outcome when Codex finishes work or needs you to unblock it.
+- **A clear voice contract.** The included agent policy defines useful completion and blocker messages while keeping intermediate updates silent.
+- **Private by default.** Services run on your own machine, anonymous ntfy access is denied, and generated credentials never enter Git.
+- **Works across Codex clients.** Desktop, CLI, and IDE clients connect through standard Streamable HTTP MCP.
+- **Failure-aware.** An optional Codex completion hook provides an independent fallback when every completed turn must produce a notification.
+- **Built from replaceable parts.** The speech subscriber depends only on ntfy's HTTP stream, so the backend can evolve without changing Codex clients.
+
+## How it works
+
+```mermaid
+flowchart LR
+    Codex[Codex hosts] -->|Streamable HTTP MCP<br/>Bearer token| Caddy[Caddy gateway]
+    Caddy --> MCP[ntfy MCP server]
+    MCP --> Ntfy[ntfy]
+    Ntfy -->|Authenticated JSON stream| Mac[macOS voice subscriber]
+    Mac --> Say[System voice]
+    Ntfy -. optional .-> Mobile[Web and mobile clients]
+```
+
+Caddy is the only published MCP endpoint. The upstream MCP container stays inside Docker's private network, while ntfy grants one generated user access to one generated topic.
+
+## Quick start
+
+### Requirements
+
+- A Mac that stays online on your trusted local network
+- Docker with Docker Compose
+- `curl`, `jq`, and `openssl`
+
+Clone the repository, then run:
 
 ```bash
+git clone https://github.com/Seker800/SekerCallMe.git
+cd SekerCallMe
 make init
 make voice-install
 ```
 
-命令会生成随机密码和令牌、启动服务、创建仅能访问一个通知主题的 ntfy 用户，并执行冒烟测试。生成的秘密保存在 `.env`，不会提交到 Git。
+`make init` detects the Mac's LAN address, creates random credentials, starts the pinned containers, configures least-privilege ntfy access, generates a Codex client snippet, and runs an end-to-end smoke test.
 
-`make voice-install` 会安装当前 macOS 用户的 LaunchAgent。它登录后自动运行，订阅通知并用系统中文语音念出标题和正文，不需要配置手机或保持浏览器打开。
+`make voice-install` installs a per-user macOS LaunchAgent. It reconnects automatically, subscribes to your private topic, and speaks messages with `/usr/bin/say`.
 
-需要换声音或语速时，可在 `.env` 设置 `SEKER_VOICE` 和 `SEKER_VOICE_RATE`，然后重新运行 `make voice-install`。系统声音名称可用 `say -v '?'` 查看。
-
-立即试听：
+Try it immediately:
 
 ```bash
 make voice-test
 ```
 
-## 连接一台 Codex
+> [!WARNING]
+> The default deployment uses HTTP and is designed only for a trusted home or studio LAN. Never forward its ports from your router. Use a VPN such as Tailscale/WireGuard or a trusted HTTPS reverse proxy on an untrusted network.
 
-`make init` 会生成 `runtime/codex-config.toml`。把其中内容追加到目标机器的 `~/.codex/config.toml`，然后重启该机器上的 Codex 客户端。
+## Connect Codex
 
-为了告诉 Codex 什么时候值得出声，把 `client/AGENTS.notification.md` 的内容加入目标机器的全局 `~/.codex/AGENTS.md`。默认策略会在重要或耗时任务完成、以及需要你介入的阻塞时自主提醒；普通问答和小操作保持安静。
+After initialization, copy the generated snippet from `runtime/codex-config.toml` into `~/.codex/config.toml` on each Codex host, then restart that Codex client.
 
-Codex Desktop、CLI 和 IDE 在同一台主机上共享 MCP 配置；不同局域网机器仍需各配置一次。
+Add the policy in [`client/AGENTS.notification.md`](client/AGENTS.notification.md) to the host's global `~/.codex/AGENTS.md`. It gives Codex a stable contract for concise completion outcomes, concrete blocker messages, explicit alert requests, and silence during intermediate or repeated updates. An explicit request to stay quiet overrides the default for that task.
 
-## 可选的强制完成通知
+Codex Desktop, CLI, and IDE clients on the same host share the MCP configuration. Each additional LAN machine needs its own client setup.
 
-MCP 工具由模型主动调用，因此不是绝对可靠。若每个完成回合都必须提醒，可把 `client/codex-notify.sh` 安装到每台机器，并在 `~/.codex/config.toml` 配置：
+## Optional guaranteed completion hook
+
+MCP tool calls are initiated by the model, so they cannot guarantee a notification after every turn. If every completed Codex turn must produce an alert, install [`client/codex-notify.sh`](client/codex-notify.sh) on that host and configure:
 
 ```toml
 notify = ["/absolute/path/to/codex-notify.sh"]
 ```
 
-脚本需要以下环境变量：`SEKER_NTFY_URL`、`SEKER_NTFY_TOPIC`、`SEKER_NTFY_USER`、`SEKER_NTFY_PASSWORD`。如果已有 `notify` 命令，不要直接覆盖，应使用一个包装脚本依次调用两者。
+The hook reads `SEKER_NTFY_URL`, `SEKER_NTFY_TOPIC`, `SEKER_NTFY_USER`, and `SEKER_NTFY_PASSWORD` from its environment. If you already use a `notify` command, call both commands from a wrapper rather than replacing the existing one.
 
-## 常用命令
+## Security model
 
-```bash
-make status
-make logs
-make check
-make smoke
-make voice-status
-make voice-test
-make down
-```
+| Boundary | Default protection |
+| --- | --- |
+| MCP entry point | Caddy requires a generated 256-bit bearer token |
+| Upstream MCP server | Private Docker network; no host port is published |
+| ntfy access | Anonymous access denied; generated user restricted to one random topic |
+| Network exposure | Published ports bind to the detected LAN address |
+| Secrets | Stored in ignored `.env` and generated `runtime/` files with restrictive permissions |
+| Dependency drift | Container versions are pinned and checked before upgrades |
 
-## iPhone 注意事项
+For the full trust-boundary and reliability design, read [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md). To report a vulnerability, follow [`SECURITY.md`](SECURITY.md) instead of opening a public issue.
 
-纯局域网自托管 ntfy 在 iPhone 后锁屏时可能延迟。需要即时推送时，在 `.env` 设置：
+## Configuration
+
+Copy `.env.example` to `.env` only when automatic LAN detection is unsuitable. `make init` normally creates this file for you.
+
+| Variable | Purpose | Default |
+| --- | --- | --- |
+| `LAN_HOST` | LAN address used for published ports | auto-detected |
+| `MCP_PORT` | Authenticated MCP gateway port | `3010` |
+| `NTFY_PORT` | ntfy subscriber port | `8080` |
+| `NTFY_UPSTREAM_BASE_URL` | Optional upstream poll relay for timely iOS delivery | empty |
+| `SEKER_VOICE` | Installed macOS system voice | `Tingting` |
+| `SEKER_VOICE_RATE` | Speech rate, from 80 to 500 | `190` |
+
+List installed macOS voices with `say -v '?'`. After changing the voice or rate, run `make voice-install` again.
+
+### iPhone delivery
+
+Pure LAN self-hosting may delay notifications when an iPhone is locked. For timely push delivery, set:
 
 ```dotenv
 NTFY_UPSTREAM_BASE_URL=https://ntfy.sh
 ```
 
-随后运行 `make up`。上游只接收轮询提示，不接收实际通知正文；手机仍需要能访问你的局域网 ntfy 地址。
+Then run `make up`. The upstream receives only a poll request, not the notification body; the phone must still be able to reach your LAN ntfy server.
+
+## Operations
+
+| Command | Purpose |
+| --- | --- |
+| `make status` | Show container status |
+| `make logs` | Follow service logs |
+| `make check` | Validate shell syntax, Compose config, and secret exclusions |
+| `make smoke` | Run authentication, MCP handshake, publish, and readback checks |
+| `make client-config` | Regenerate the Codex configuration snippet |
+| `make voice-status` | Inspect the macOS voice subscriber |
+| `make voice-test` | Publish a spoken test message |
+| `make voice-uninstall` | Remove the voice LaunchAgent |
+| `make down` | Stop the containers |
+
+## Project principles
+
+SekerCallMe is intentionally small. It aims to remain easy to deploy, private by default, dependable enough for long-running agent work, and loosely coupled to any single client or notification platform. The complete product direction lives in [`docs/NORTH_STAR.md`](docs/NORTH_STAR.md).
+
+## Contributing
+
+Bug reports, documentation improvements, and focused pull requests are welcome. Start with [`CONTRIBUTING.md`](CONTRIBUTING.md) and follow the [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
+
+## Acknowledgements
+
+SekerCallMe is an integration project built on the excellent work of [ntfy](https://github.com/binwiederhier/ntfy), [ntfy-mcp-server](https://github.com/cyanheads/ntfy-mcp-server), and [Caddy](https://github.com/caddyserver/caddy).
+
+## License
+
+Released under the [MIT License](LICENSE).

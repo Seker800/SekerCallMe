@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">SekerCallMe</title>
+  <desc id="desc">A speech bubble with a notification wave</desc>
+  <defs>
+    <linearGradient id="background" x1="18" y1="14" x2="142" y2="148" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#111827" flood-opacity=".22"/>
+    </filter>
+  </defs>
+  <rect x="8" y="8" width="144" height="144" rx="36" fill="url(#background)"/>
+  <path d="M43 43h58c13.3 0 24 10.7 24 24v20c0 13.3-10.7 24-24 24H73l-24 18v-18h-6c-13.3 0-24-10.7-24-24V67c0-13.3 10.7-24 24-24Z" fill="#fff" filter="url(#shadow)"/>
+  <path d="M54 71v14M70 62v32M86 68v20M102 76v4" fill="none" stroke="#4F46E5" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="126" cy="39" r="17" fill="#F97316" stroke="#fff" stroke-width="6"/>
+</svg>

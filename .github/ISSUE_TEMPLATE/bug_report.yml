@@ -1,0 +1,42 @@
+name: Bug report
+description: Report a reproducible problem with SekerCallMe
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve SekerCallMe. Never include real tokens, passwords, topic names, or private network details.
+  - type: checkboxes
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues for the same problem.
+          required: true
+        - label: This report does not contain secrets or private network information.
+          required: true
+  - type: textarea
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: How can we reproduce it?
+      description: Provide the smallest safe sequence of commands or configuration needed to reproduce the issue.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Environment
+      description: Include macOS, Docker, Docker Compose, and relevant client versions.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Sanitized logs
+      description: Remove credentials, topic names, LAN addresses, file paths, and other private data before pasting logs.
+    validations:
+      required: false

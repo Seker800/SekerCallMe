@@ -1,0 +1,32 @@
+name: Feature request
+description: Propose a focused improvement to SekerCallMe
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    attributes:
+      label: Problem
+      description: What user problem would this solve?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Proposed solution
+      description: Describe the smallest solution that would address the problem.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Alternatives considered
+      description: What other approaches or existing tools did you consider?
+    validations:
+      required: false
+  - type: checkboxes
+    attributes:
+      label: Project fit
+      options:
+        - label: This keeps credentials out of Git and preserves the authenticated MCP boundary.
+          required: true
+        - label: This fits the project's focused notification and speech scope.
+          required: true
