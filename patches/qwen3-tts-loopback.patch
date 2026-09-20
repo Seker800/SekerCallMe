@@ -1,0 +1,27 @@
+diff --git a/qwen_tts_server.c b/qwen_tts_server.c
+index ce859c7..b903282 100644
+--- a/qwen_tts_server.c
++++ b/qwen_tts_server.c
+@@ -1608,7 +1608,7 @@ static int setup_listen_socket(int port) {
+ #endif
+     struct sockaddr_in addr = {
+         .sin_family = AF_INET,
+-        .sin_addr.s_addr = INADDR_ANY,
++        .sin_addr.s_addr = htonl(INADDR_LOOPBACK),
+         .sin_port = htons(port)
+     };
+     if (bind(server_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+diff --git a/download_model.sh b/download_model.sh
+index 1769faf..da69f9b 100755
+--- a/download_model.sh
++++ b/download_model.sh
+@@ -128,7 +128,8 @@ echo "Downloading ${MODEL_ID} to ${MODEL_DIR}/"
+ mkdir -p "${MODEL_DIR}"
+ mkdir -p "${MODEL_DIR}/speech_tokenizer"
+ 
+-BASE_URL="https://huggingface.co/${MODEL_ID}/resolve/main"
++MODEL_REVISION="${QWEN_MODEL_REVISION:-main}"
++BASE_URL="https://huggingface.co/${MODEL_ID}/resolve/${MODEL_REVISION}"
+ 
+ fetch() {
+     local dest="$1" url="$2" label="$3"

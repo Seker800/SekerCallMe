@@ -1,0 +1,67 @@
+diff --git a/qwen_tts_server.c b/qwen_tts_server.c
+index b903282..9a1ad63 100644
+--- a/qwen_tts_server.c
++++ b/qwen_tts_server.c
+@@ -231,7 +231,6 @@ static void send_response(int fd, int status, const char *content_type,
+         "HTTP/1.1 %d %s\r\n"
+         "Content-Type: %s\r\n"
+         "Content-Length: %d\r\n"
+-        "Access-Control-Allow-Origin: *\r\n"
+         "Connection: close\r\n"
+         "\r\n",
+         status, status_text, content_type, body_len);
+@@ -319,7 +318,6 @@ static int send_chunked_header(int fd) {
+         "X-Sample-Format: s16le\r\n"
+         "X-Channels: 1\r\n"
+         "Transfer-Encoding: chunked\r\n"
+-        "Access-Control-Allow-Origin: *\r\n"
+         "Connection: close\r\n"
+         "\r\n";
+     return write_all_or_gone(fd, header, strlen(header));
+@@ -1213,8 +1211,8 @@ static void handle_tts(qwen_tts_ctx_t *ctx, int fd, const char *body) {
+         return;
+     }
+ 
+-    fprintf(stderr, "[HTTP] TTS: \"%s\" (speaker=%d, lang=%d, seed=%u)\n",
+-            text, ctx->speaker_id, ctx->language_id, ctx->seed);
++    fprintf(stderr, "[HTTP] TTS request (speaker=%d, lang=%d, seed=%u)\n",
++            ctx->speaker_id, ctx->language_id, ctx->seed);
+     double t0 = server_time_ms();
+ 
+     ctx->stream = 0;
+@@ -1284,8 +1282,8 @@ static int handle_tts_stream(qwen_tts_ctx_t *ctx, int fd, const char *body) {
+         return 0;
+     }
+ 
+-    fprintf(stderr, "[HTTP] TTS stream: \"%s\" (speaker=%d, lang=%d, seed=%u)\n",
+-            text, ctx->speaker_id, ctx->language_id, ctx->seed);
++    fprintf(stderr, "[HTTP] TTS stream request (speaker=%d, lang=%d, seed=%u)\n",
++            ctx->speaker_id, ctx->language_id, ctx->seed);
+     double t0 = server_time_ms();
+ 
+     stream_http_state_t state = { .fd = fd, .total_samples = 0, .volume = volume, .out = NULL };
+@@ -1413,7 +1411,6 @@ static void handle_client(qwen_tts_ctx_t *ctx, int client_fd,
+     if (strcmp(method, "OPTIONS") == 0) {
+         const char *cors =
+             "HTTP/1.1 204 No Content\r\n"
+-            "Access-Control-Allow-Origin: *\r\n"
+             "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
+             "Access-Control-Allow-Headers: Content-Type\r\n"
+             "Connection: close\r\n\r\n";
+@@ -2196,7 +2193,7 @@ static void print_banner(int port, int n_workers) {
+     if (getenv("QWEN_DISPATCH_MAP") || getenv("QWEN_SERVE_PROFILE") ||
+         getenv("QWEN_SHAPE_CENSUS") || getenv("QWEN_COST_MAP"))
+         qwen_dispatch_map_report(stderr, NULL);
+-    fprintf(stderr, "Server listening on http://0.0.0.0:%d", port);
++    fprintf(stderr, "Server listening on http://127.0.0.1:%d", port);
+     if (n_workers > 1)
+         fprintf(stderr, " (%d workers%s)", n_workers,
+                 g_serialize_synth ? ", synthesis serialized: non-reentrant thread pool" : "");
+@@ -2505,6 +2502,6 @@ int qwen_tts_serve_batch(qwen_tts_ctx_t *ctx, int port, int max_batch) {
+         }
+         if (strcmp(method, "OPTIONS") == 0) {
+-            const char *cors = "HTTP/1.1 204 No Content\r\nAccess-Control-Allow-Origin: *\r\n"
++            const char *cors = "HTTP/1.1 204 No Content\r\n"
+                 "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\nAccess-Control-Allow-Headers: Content-Type\r\n"
+                 "Connection: close\r\n\r\n";
+             write(fd, cors, strlen(cors)); srv_conn_close(fd);

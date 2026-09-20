@@ -8,36 +8,52 @@ source "$root/scripts/lib.sh"
 
 require_command curl
 require_command jq
-require_command say
+require_command shasum
 load_env
 
-voice="${SEKER_VOICE:-Tingting}"
-rate="${SEKER_VOICE_RATE:-190}"
 stream_url="http://${LAN_HOST}:${NTFY_PORT}/${NTFY_TOPIC}/json"
+dedup_seconds="${SEKER_VOICE_DEDUP_SECONDS:-120}"
+dedup_state="$root/runtime/voice-subscriber.last"
 
-if [[ ! "$rate" =~ ^[0-9]{2,3}$ ]]; then
-  echo 'SEKER_VOICE_RATE must be an integer between 80 and 500.' >&2
-  exit 1
-fi
-rate_number=$((10#$rate))
-if ((rate_number < 80 || rate_number > 500)); then
-  echo 'SEKER_VOICE_RATE must be an integer between 80 and 500.' >&2
+if [[ ! "$dedup_seconds" =~ ^[0-9]{1,4}$ ]]; then
+  echo 'SEKER_VOICE_DEDUP_SECONDS must be an integer between 0 and 9999.' >&2
   exit 1
 fi
 
-echo "Voice subscriber started for ${LAN_HOST}:${NTFY_PORT} using voice ${voice}."
+mkdir -p "$root/runtime"
+echo "Voice subscriber started for ${LAN_HOST}:${NTFY_PORT}."
 
 while true; do
   while IFS= read -r event; do
     [[ "$(jq -r '.event // empty' <<<"$event")" == "message" ]] || continue
 
-    title="$(jq -r '(.title // "Codex 通知") | tostring | .[0:120]' <<<"$event")"
     message="$(jq -r '(.message // "") | tostring | .[0:600]' <<<"$event")"
     [[ -n "$message" ]] || continue
 
+    speech_text="$(printf '%s' "$message" | "$root/client/voice-text.sh")"
+    [[ -n "$speech_text" ]] || continue
+
+    now="$(date +%s)"
+    speech_hash="$(printf '%s' "$speech_text" | shasum -a 256 | awk '{print $1}')"
+    last_time=0
+    last_hash=''
+    if [[ -f "$dedup_state" ]]; then
+      IFS=' ' read -r last_time last_hash <"$dedup_state" || true
+    fi
+    if ((dedup_seconds > 0)) && \
+      [[ "$last_time" =~ ^[0-9]+$ ]] && \
+      [[ "$last_hash" == "$speech_hash" ]] && \
+      ((now - last_time <= dedup_seconds)); then
+      echo 'Skipping duplicate voice notification.'
+      continue
+    fi
+
     event_id="$(jq -r '.id // "unknown"' <<<"$event")"
     echo "Speaking notification ${event_id}."
-    /usr/bin/say -v "$voice" -r "$rate" "${title}。${message}"
+    if "$root/client/speak.sh" "$speech_text"; then
+      printf '%s %s\n' "$now" "$speech_hash" >"${dedup_state}.tmp"
+      mv "${dedup_state}.tmp" "$dedup_state"
+    fi
   done < <(/usr/bin/curl -fsSN \
     --connect-timeout 10 \
     -u "${NTFY_USER}:${NTFY_PASSWORD}" \

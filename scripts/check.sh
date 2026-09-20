@@ -9,6 +9,13 @@ for script in scripts/*.sh client/*.sh; do
   bash -n "$script"
 done
 
+if compgen -G 'tests/*.sh' >/dev/null; then
+  for script in tests/*.sh; do
+    bash -n "$script"
+  done
+  ./tests/run.sh
+fi
+
 if [[ -f .env ]]; then
   docker compose config --quiet
 else

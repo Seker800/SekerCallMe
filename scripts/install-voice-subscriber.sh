@@ -9,6 +9,8 @@ source "$root/scripts/lib.sh"
 require_command launchctl
 require_command plutil
 require_command jq
+require_command afplay
+require_command perl
 require_command say
 load_env
 

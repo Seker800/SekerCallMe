@@ -7,7 +7,6 @@ services:
     restart: unless-stopped
     environment:
       NTFY_BASE_URL: http://${LAN_HOST}:${NTFY_PORT:-8080}
-      NTFY_UPSTREAM_BASE_URL: ${NTFY_UPSTREAM_BASE_URL:-}
     ports:
       - "${LAN_HOST}:${NTFY_PORT:-8080}:80"
     volumes:

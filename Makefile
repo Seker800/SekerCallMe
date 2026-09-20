@@ -1,4 +1,4 @@
-.PHONY: init up down logs status check smoke client-config voice-install voice-uninstall voice-status voice-test
+.PHONY: init up down logs status check smoke client-config voice-install voice-uninstall voice-status voice-test voice-ai-install voice-ai-uninstall voice-ai-status
 
 init:
 	./scripts/init.sh
@@ -35,3 +35,12 @@ voice-status:
 
 voice-test:
 	./scripts/publish-voice-test.sh
+
+voice-ai-install:
+	./scripts/install-qwen-tts.sh
+
+voice-ai-uninstall:
+	./scripts/uninstall-qwen-tts.sh
+
+voice-ai-status:
+	./scripts/qwen-tts-status.sh
