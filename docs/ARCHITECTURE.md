@@ -28,6 +28,10 @@ Optional ntfy browser and phone clients can subscribe to the same topic.
 - Audio playback stays outside Docker. A per-user macOS LaunchAgent subscribes to the authenticated ntfy JSON stream and passes title and message text as quoted arguments to `/usr/bin/say`.
 - The voice subscriber depends only on ntfy's public HTTP stream, so the speech backend can be replaced without changing the MCP server or Codex clients.
 
+## Stable machine identifiers
+
+The public product name is Let Agent Speak. Machine-facing identifiers created before the rename—including `seker-call-me`, `seker_call_me`, `com.seker.callme.voice`, and the `SEKER_` environment-variable prefix—remain stable compatibility IDs. Treat them as opaque implementation details. Changing them without an explicit migration would create duplicate MCP entries, Compose projects, or LaunchAgents on existing installations.
+
 ## Announcement policy
 
 Codex receives a small policy in its global `AGENTS.md`. It announces once when substantial requested work is genuinely complete, when a long-running operation finishes, or when progress is blocked and requires the operator. It stays silent for routine questions, quick edits, intermediate progress, and repeated updates. Explicit user requests to speak or stay quiet override this default.

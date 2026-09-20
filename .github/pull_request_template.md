@@ -1,6 +1,6 @@
 ## Why
 
-Describe the problem and why this change belongs in SekerCallMe.
+Describe the problem and why this change belongs in Let Agent Speak.
 
 ## What changed
 

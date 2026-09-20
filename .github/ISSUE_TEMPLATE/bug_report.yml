@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a reproducible problem with SekerCallMe
+description: Report a reproducible problem with Let Agent Speak
 title: "[Bug]: "
 labels:
   - bug
@@ -7,7 +7,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for helping improve SekerCallMe. Never include real tokens, passwords, topic names, or private network details.
+        Thanks for helping improve Let Agent Speak. Never include real tokens, passwords, topic names, or private network details.
   - type: checkboxes
     attributes:
       label: Before submitting

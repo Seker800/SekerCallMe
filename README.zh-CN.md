@@ -1,12 +1,12 @@
 <div align="center">
-  <img src="docs/assets/logo.svg" width="128" alt="SekerCallMe 标志">
-  <h1>SekerCallMe</h1>
-  <p><strong>只在真正重要的时候，让 Codex 开口叫你。</strong></p>
-  <p>运行在可信局域网里的私有、自托管 Codex 语音提醒桥接器。</p>
+  <img src="docs/assets/logo.svg" width="128" alt="Let Agent Speak 标志">
+  <h1>Let Agent Speak</h1>
+  <p><strong>Your agent speaks when it’s done — or when it needs you.</strong></p>
+  <p>运行在可信局域网里的私有、自托管 AI Agent 语音提醒桥接器。</p>
 
   <p>
-    <a href="https://github.com/Seker800/SekerCallMe/actions/workflows/validate.yml"><img src="https://img.shields.io/github/actions/workflow/status/Seker800/SekerCallMe/validate.yml?branch=main&style=flat-square&label=checks" alt="检查状态"></a>
-    <a href="LICENSE"><img src="https://img.shields.io/github/license/Seker800/SekerCallMe?style=flat-square" alt="MIT 许可证"></a>
+    <a href="https://github.com/Seker800/LetAgentSpeak/actions/workflows/validate.yml"><img src="https://img.shields.io/github/actions/workflow/status/Seker800/LetAgentSpeak/validate.yml?branch=main&style=flat-square&label=checks" alt="检查状态"></a>
+    <a href="LICENSE"><img src="https://img.shields.io/github/license/Seker800/LetAgentSpeak?style=flat-square" alt="MIT 许可证"></a>
     <img src="https://img.shields.io/badge/macOS-voice-111827?style=flat-square&logo=apple" alt="macOS 语音">
     <img src="https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker Compose">
   </p>
@@ -16,7 +16,7 @@
 
 ---
 
-SekerCallMe 让可信局域网里的每台 Codex 主机都能用同一种简单方式提醒你：每个任务结束时，或 Codex 确实需要你介入时，服务端 Mac 会直接念出一条简短结果。不需要手机、不需要保持浏览器打开，也不依赖云通知账户。
+Let Agent Speak 让可信局域网里的每台 AI Agent 主机都能用同一种简单方式提醒你：每个任务结束时，或 Agent 确实需要你介入时，服务端 Mac 会直接念出一条简短结果。不需要手机、不需要保持浏览器打开，也不依赖云通知账户。
 
 它组合了三个职责清晰、可以替换的成熟组件：
 
@@ -24,7 +24,7 @@ SekerCallMe 让可信局域网里的每台 Codex 主机都能用同一种简单�
 - [ntfy-mcp-server](https://github.com/cyanheads/ntfy-mcp-server)：向 Codex 暴露通知工具；
 - [Caddy](https://github.com/caddyserver/caddy)：用 Bearer Token 保护局域网 MCP 入口。
 
-## 为什么使用 SekerCallMe？
+## 为什么使用 Let Agent Speak？
 
 - **任务执行时可以放心离开。** Codex 完成工作或需要你解除阻塞时，你会听到简短结果。
 - **清晰的语音约定。** 附带的 Agent 策略定义有用的完成与阻塞消息，同时保持中间进度安静。
@@ -58,8 +58,8 @@ Caddy 是唯一对外发布的 MCP 入口。上游 MCP 容器只在 Docker 私�
 克隆仓库并执行：
 
 ```bash
-git clone https://github.com/Seker800/SekerCallMe.git
-cd SekerCallMe
+git clone https://github.com/Seker800/LetAgentSpeak.git
+cd LetAgentSpeak
 make init
 make voice-install
 ```
@@ -149,7 +149,7 @@ NTFY_UPSTREAM_BASE_URL=https://ntfy.sh
 
 ## 项目原则
 
-SekerCallMe 会刻意保持小而清晰：容易部署、默认私密、足以支撑长时间 Agent 工作，并与单一客户端或通知平台保持低耦合。完整产品方向见 [`docs/NORTH_STAR.md`](docs/NORTH_STAR.md)。
+Let Agent Speak 会刻意保持小而清晰：容易部署、默认私密、足以支撑长时间 Agent 工作，并与单一客户端或通知平台保持低耦合。完整产品方向见 [`docs/NORTH_STAR.md`](docs/NORTH_STAR.md)。
 
 ## 参与贡献
 
@@ -157,7 +157,7 @@ SekerCallMe 会刻意保持小而清晰：容易部署、默认私密、足以�
 
 ## 致谢
 
-SekerCallMe 是建立在 [ntfy](https://github.com/binwiederhier/ntfy)、[ntfy-mcp-server](https://github.com/cyanheads/ntfy-mcp-server) 和 [Caddy](https://github.com/caddyserver/caddy) 之上的集成项目，感谢这些项目的出色工作。
+Let Agent Speak 是建立在 [ntfy](https://github.com/binwiederhier/ntfy)、[ntfy-mcp-server](https://github.com/cyanheads/ntfy-mcp-server) 和 [Caddy](https://github.com/caddyserver/caddy) 之上的集成项目，感谢这些项目的出色工作。
 
 ## 许可证
 

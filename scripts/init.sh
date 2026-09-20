@@ -59,7 +59,7 @@ docker compose up -d
 "$root/scripts/smoke-test.sh"
 
 echo
-echo "SekerCallMe is ready."
+echo "Let Agent Speak is ready."
 echo "ntfy: http://${LAN_HOST}:${NTFY_PORT}/${NTFY_TOPIC}"
 echo "MCP:  http://${LAN_HOST}:${MCP_PORT}/mcp"
 echo "Client configuration: $root/runtime/codex-config.toml"

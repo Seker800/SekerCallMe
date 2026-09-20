@@ -1,6 +1,6 @@
 # North Star
 
-SekerCallMe gives every Codex host on a trusted local network one small, consistent way to make the operator's Mac speak when work finishes or needs attention.
+Let Agent Speak gives every Codex host on a trusted local network one small, consistent way to make the operator's Mac speak when work finishes or needs attention.
 
 The system should be:
 

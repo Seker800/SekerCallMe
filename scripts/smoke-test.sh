@@ -78,7 +78,7 @@ curl -fsS -o "$tmp_dir/call.body" \
   -X POST "$mcp_url" \
   "${common_headers[@]}" \
   -H "Mcp-Session-Id: $session_id" \
-  -d '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"ntfy_publish_message","arguments":{"title":"SekerCallMe smoke test","message":"End-to-end MCP delivery is working.","priority":3,"tags":["white_check_mark"]}}}'
+  -d '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"ntfy_publish_message","arguments":{"title":"Let Agent Speak smoke test","message":"End-to-end MCP delivery is working.","priority":3,"tags":["white_check_mark"]}}}'
 if ! grep -q 'End-to-end MCP delivery is working' "$tmp_dir/call.body"; then
   echo 'MCP notification call did not report success.' >&2
   exit 1

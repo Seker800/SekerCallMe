@@ -2,7 +2,7 @@
 
 ## Our standard
 
-We want participation in SekerCallMe to be welcoming, constructive, and safe. Be respectful, assume good intent, give actionable technical feedback, and make room for people with different backgrounds and levels of experience.
+We want participation in Let Agent Speak to be welcoming, constructive, and safe. Be respectful, assume good intent, give actionable technical feedback, and make room for people with different backgrounds and levels of experience.
 
 Unacceptable behavior includes harassment, personal attacks, discriminatory language, sexualized content, deliberate intimidation, publishing another person's private information, or sustained disruption of project spaces.
 

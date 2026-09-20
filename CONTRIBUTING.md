@@ -1,6 +1,6 @@
-# Contributing to SekerCallMe
+# Contributing to Let Agent Speak
 
-Thanks for helping make SekerCallMe simpler, safer, and more dependable.
+Thanks for helping make Let Agent Speak simpler, safer, and more dependable.
 
 ## Before you start
 
@@ -14,8 +14,8 @@ Thanks for helping make SekerCallMe simpler, safer, and more dependable.
 You need macOS, Docker with Docker Compose, `curl`, `jq`, and `openssl`.
 
 ```bash
-git clone https://github.com/Seker800/SekerCallMe.git
-cd SekerCallMe
+git clone https://github.com/Seker800/LetAgentSpeak.git
+cd LetAgentSpeak
 make init
 make voice-install
 ```

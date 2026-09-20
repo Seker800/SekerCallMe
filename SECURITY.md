@@ -1,6 +1,6 @@
 # Security Policy
 
-SekerCallMe handles credentials and publishes services on a local network. Please treat security reports carefully.
+Let Agent Speak handles credentials and publishes services on a local network. Please treat security reports carefully.
 
 ## Supported versions
 

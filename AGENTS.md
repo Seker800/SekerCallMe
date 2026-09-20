@@ -1,4 +1,4 @@
-# SekerCallMe workspace rules
+# Let Agent Speak workspace rules
 
 - Read `docs/NORTH_STAR.md` and `docs/ARCHITECTURE.md` before changing runtime behavior.
 - Never commit `.env`, generated client configuration, credentials, or runtime data.

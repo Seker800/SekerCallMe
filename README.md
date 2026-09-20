@@ -1,12 +1,12 @@
 <div align="center">
-  <img src="docs/assets/logo.svg" width="128" alt="SekerCallMe logo">
-  <h1>SekerCallMe</h1>
-  <p><strong>Let Codex call you when it actually matters.</strong></p>
-  <p>A private, self-hosted voice notification bridge for Codex on your trusted local network.</p>
+  <img src="docs/assets/logo.svg" width="128" alt="Let Agent Speak logo">
+  <h1>Let Agent Speak</h1>
+  <p><strong>Your agent speaks when it’s done — or when it needs you.</strong></p>
+  <p>A private, self-hosted voice notification bridge for AI agents on your trusted local network.</p>
 
   <p>
-    <a href="https://github.com/Seker800/SekerCallMe/actions/workflows/validate.yml"><img src="https://img.shields.io/github/actions/workflow/status/Seker800/SekerCallMe/validate.yml?branch=main&style=flat-square&label=checks" alt="Checks"></a>
-    <a href="LICENSE"><img src="https://img.shields.io/github/license/Seker800/SekerCallMe?style=flat-square" alt="MIT License"></a>
+    <a href="https://github.com/Seker800/LetAgentSpeak/actions/workflows/validate.yml"><img src="https://img.shields.io/github/actions/workflow/status/Seker800/LetAgentSpeak/validate.yml?branch=main&style=flat-square&label=checks" alt="Checks"></a>
+    <a href="LICENSE"><img src="https://img.shields.io/github/license/Seker800/LetAgentSpeak?style=flat-square" alt="MIT License"></a>
     <img src="https://img.shields.io/badge/macOS-voice-111827?style=flat-square&logo=apple" alt="macOS voice">
     <img src="https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker Compose">
     <img src="https://img.shields.io/badge/MCP-Streamable_HTTP-7C3AED?style=flat-square" alt="MCP Streamable HTTP">
@@ -17,7 +17,7 @@
 
 ---
 
-SekerCallMe gives every Codex host on your trusted LAN one small, consistent way to get your attention. At the end of each task—or when Codex genuinely needs you—the server Mac speaks a short outcome aloud. No phone, open browser, or cloud notification account is required.
+Let Agent Speak gives every AI agent host on your trusted LAN one small, consistent way to get your attention. At the end of each task—or when the agent genuinely needs you—the server Mac speaks a short outcome aloud. No phone, open browser, or cloud notification account is required.
 
 It assembles three focused, replaceable components:
 
@@ -25,7 +25,7 @@ It assembles three focused, replaceable components:
 - [ntfy-mcp-server](https://github.com/cyanheads/ntfy-mcp-server) exposes the notification tool to Codex.
 - [Caddy](https://github.com/caddyserver/caddy) protects the LAN-facing MCP endpoint with a bearer token.
 
-## Why SekerCallMe?
+## Why Let Agent Speak?
 
 - **Walk away from tasks.** Hear a concise outcome when Codex finishes work or needs you to unblock it.
 - **A clear voice contract.** The included agent policy defines useful completion and blocker messages while keeping intermediate updates silent.
@@ -59,8 +59,8 @@ Caddy is the only published MCP endpoint. The upstream MCP container stays insid
 Clone the repository, then run:
 
 ```bash
-git clone https://github.com/Seker800/SekerCallMe.git
-cd SekerCallMe
+git clone https://github.com/Seker800/LetAgentSpeak.git
+cd LetAgentSpeak
 make init
 make voice-install
 ```
@@ -150,7 +150,7 @@ Then run `make up`. The upstream receives only a poll request, not the notificat
 
 ## Project principles
 
-SekerCallMe is intentionally small. It aims to remain easy to deploy, private by default, dependable enough for long-running agent work, and loosely coupled to any single client or notification platform. The complete product direction lives in [`docs/NORTH_STAR.md`](docs/NORTH_STAR.md).
+Let Agent Speak is intentionally small. It aims to remain easy to deploy, private by default, dependable enough for long-running agent work, and loosely coupled to any single client or notification platform. The complete product direction lives in [`docs/NORTH_STAR.md`](docs/NORTH_STAR.md).
 
 ## Contributing
 
@@ -158,7 +158,7 @@ Bug reports, documentation improvements, and focused pull requests are welcome. 
 
 ## Acknowledgements
 
-SekerCallMe is an integration project built on the excellent work of [ntfy](https://github.com/binwiederhier/ntfy), [ntfy-mcp-server](https://github.com/cyanheads/ntfy-mcp-server), and [Caddy](https://github.com/caddyserver/caddy).
+Let Agent Speak is an integration project built on the excellent work of [ntfy](https://github.com/binwiederhier/ntfy), [ntfy-mcp-server](https://github.com/cyanheads/ntfy-mcp-server), and [Caddy](https://github.com/caddyserver/caddy).
 
 ## License
 
