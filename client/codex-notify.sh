@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 # Optional guaranteed turn-completion fallback. Codex appends its JSON event as
-# the final argument; the fallback intentionally sends only a short fixed body.
+# the final argument. The global agent policy keeps the first line concise and
+# safe to speak, so the hook can reuse it as the audible outcome.
 set -euo pipefail
 
 : "${SEKER_NTFY_URL:?Set SEKER_NTFY_URL, for example http://192.168.1.10:8080}"
@@ -10,20 +11,28 @@ set -euo pipefail
 : "${SEKER_NTFY_PASSWORD:?Set SEKER_NTFY_PASSWORD}"
 
 payload="${1:-{}}"
-cwd=""
+message=""
 if command -v jq >/dev/null 2>&1; then
-  cwd="$(printf '%s' "$payload" | jq -r '.cwd // empty' 2>/dev/null || true)"
+  event_type="$(printf '%s' "$payload" | jq -r '.type // empty' 2>/dev/null || true)"
+  if [[ -n "$event_type" && "$event_type" != "agent-turn-complete" ]]; then
+    exit 0
+  fi
+
+  message="$(
+    printf '%s' "$payload" |
+      jq -r '.["last-assistant-message"] // empty | tostring' 2>/dev/null |
+      awk 'NF { sub(/^[[:space:]#>*-]+/, ""); print; exit }' |
+      cut -c1-300 || true
+  )"
 fi
 
-host="$(hostname -s 2>/dev/null || hostname)"
-message="Codex on $host finished a turn."
-if [[ -n "$cwd" ]]; then
-  message="$message Project: $cwd"
+if [[ -z "$message" ]]; then
+  message='Codex 已完成当前任务，请查看最终结果。'
 fi
 
 curl -fsS \
   -u "${SEKER_NTFY_USER}:${SEKER_NTFY_PASSWORD}" \
-  -H "Title: Codex finished on $host" \
+  -H 'Title: Codex 任务结束' \
   -H 'Priority: 3' \
   -H 'Tags: white_check_mark,computer' \
   -d "$message" \
